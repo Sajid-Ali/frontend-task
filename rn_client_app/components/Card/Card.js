@@ -1,6 +1,7 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View, Switch } from 'react-native';
+import {Image, StyleSheet, Text, View, Switch} from 'react-native';
 import colors from '../../utils/theme/colors';
+import Moment from "moment";
 
 const Card = ({
   imageSource,
@@ -8,18 +9,36 @@ const Card = ({
   toggleSwitch,
   isEnabled,
   locked,
+  title,
+  subTitle,
+  cardType,
+  isGuestUser,
+  startDate,
+  endDate
 }) => (
-    <View style={[styles.container, containerStyle]}>
-      <Image resizeMode="cover" source={imageSource} style={styles.imageStyle} />
-      <View style={styles.contentStyle}>
-        <View style={{ marginBottom: 20 }}>
-          <Text style={styles.title}>Friends</Text>
-          <Text style={styles.subTitle}>friend@email.com</Text>
-        </View>
-        <View style={styles.actionContainer}>
+  <View style={[styles.container, containerStyle]}>
+    <Image resizeMode="cover" source={imageSource} style={styles.imageStyle} />
+    <View style={styles.contentStyle}>
+      <View style={{marginBottom: 20}}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.subTitle}>{subTitle}</Text>
+        {isGuestUser && <Text>{`${Moment(startDate).format("MMMM Do, h:mm")} - ${Moment(endDate).format("MMMM Do, h:mm")}`}</Text>}
+      </View>
+      <View style={styles.actionContainer}>
+        {cardType === 'user' && (
+          <View>
+            <View style={styles.userStatusWrapper(isGuestUser)}>
+              <Text style={styles.statusText(isGuestUser)}>
+                {locked ? 'Locked' : 'UnLocked'}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {cardType === 'device' && (
           <View style={styles.actionWrapper}>
             <Switch
-              trackColor={{ false: colors.red, true: colors.green }}
+              trackColor={{false: colors.red, true: colors.green}}
               thumbColor={colors.white}
               onValueChange={toggleSwitch}
               value={isEnabled}
@@ -30,10 +49,11 @@ const Card = ({
               </Text>
             </View>
           </View>
-        </View>
+        )}
       </View>
     </View>
-  );
+  </View>
+);
 
 export default Card;
 
@@ -71,4 +91,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  userStatusWrapper: isGuestUser => ({
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    width: 120,
+    height: 35,
+    borderRadius: 20,
+    backgroundColor: isGuestUser ? colors.upcoming : colors.active,
+    justifyContent: 'center',
+    marginEnd: 10
+  }),
+  statusText: isGuestUser => ({
+    color: isGuestUser ? colors.upcomingText : colors.activeText,
+    textAlign: 'center'
+  })
 });
