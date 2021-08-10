@@ -14,7 +14,7 @@ export const Devices = () => {
       .then(response => {
         const result = response?.data?.data?.map(row => ({
           ...row,
-          isLocked: false,
+          isLocked: row?.type === 'lock' && true || false,
         }));
         setDevices(result);
       })
