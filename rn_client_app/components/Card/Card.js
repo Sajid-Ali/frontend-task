@@ -29,7 +29,7 @@ const Card = ({
           <View>
             <View style={styles.userStatusWrapper(isGuestUser)}>
               <Text style={styles.statusText(isGuestUser)}>
-                {locked ? 'Locked' : 'UnLocked'}
+                {isGuestUser ? 'UPCOMING' : 'ACTIVE'}
               </Text>
             </View>
           </View>
@@ -44,7 +44,7 @@ const Card = ({
               value={isEnabled}
             />
             <View>
-              <Text style={styles.lockedText}>
+              <Text style={styles.lockedText(isEnabled)}>
                 {locked ? 'Locked' : 'UnLocked'}
               </Text>
             </View>
@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
     color: colors.grey,
     fontSize: 16,
   },
-  lockedText: {
-    color: colors.green,
-  },
+  lockedText: isEnabled => ({
+    color: isEnabled? colors.green : colors.red,
+  }),
   actionContainer: {
     flex: 1,
   },
