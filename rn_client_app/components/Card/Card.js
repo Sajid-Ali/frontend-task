@@ -1,7 +1,8 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View, Switch} from 'react-native';
 import colors from '../../utils/theme/colors';
-import Moment from "moment";
+import Moment from 'moment';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Card = ({
   imageSource,
@@ -14,7 +15,7 @@ const Card = ({
   cardType,
   isGuestUser,
   startDate,
-  endDate
+  endDate,
 }) => (
   <View style={[styles.container, containerStyle]}>
     <Image resizeMode="cover" source={imageSource} style={styles.imageStyle} />
@@ -22,7 +23,11 @@ const Card = ({
       <View style={{marginBottom: 20}}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subTitle}>{subTitle}</Text>
-        {isGuestUser && <Text>{`${Moment(startDate).format("MMMM Do, h:mm")} - ${Moment(endDate).format("MMMM Do, h:mm")}`}</Text>}
+        {isGuestUser && (
+          <Text>{`${Moment(startDate).format('MMMM Do, h:mm')} - ${Moment(
+            endDate,
+          ).format('MMMM Do, h:mm')}`}</Text>
+        )}
       </View>
       <View style={styles.actionContainer}>
         {cardType === 'user' && (
@@ -39,11 +44,17 @@ const Card = ({
           <View style={styles.actionWrapper}>
             <Switch
               trackColor={{false: colors.red, true: colors.green}}
+              ios_backgroundColor={colors.red}
               thumbColor={colors.white}
               onValueChange={toggleSwitch}
               value={isEnabled}
             />
-            <View>
+            <View style={styles.deviceStatusWrapper}>
+              <Icon
+                name={locked ? 'lock-closed-sharp' : 'lock-open-outline'}
+                size={20}
+                color={locked ? colors.green : colors.red}
+              />
               <Text style={styles.lockedText(isEnabled)}>
                 {locked ? 'Locked' : 'UnLocked'}
               </Text>
@@ -81,7 +92,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lockedText: isEnabled => ({
-    color: isEnabled? colors.green : colors.red,
+    color: isEnabled ? colors.green : colors.red,
+    marginStart: 5
   }),
   actionContainer: {
     flex: 1,
@@ -99,10 +111,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: isGuestUser ? colors.upcoming : colors.active,
     justifyContent: 'center',
-    marginEnd: 10
+    marginEnd: 10,
   }),
   statusText: isGuestUser => ({
     color: isGuestUser ? colors.upcomingText : colors.activeText,
-    textAlign: 'center'
-  })
+    textAlign: 'center',
+  }),
+  deviceStatusWrapper: {
+    flexDirection: 'row',
+    alignItems: 'baseline'
+  }
 });
